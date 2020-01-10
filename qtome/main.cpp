@@ -85,19 +85,33 @@ preloadFiles(QStringList preloadlist)
   }
 }
 
+QCoreApplication*
+createApplication(int& argc, char* argv[])
+{
+  // if any of the args is script or server, then don't use a GUI application
+  for (int i = 1; i < argc; ++i) {
+    if (!qstrcmp(argv[i], "--script") || !qstrcmp(argv[i], "--server")) {
+      return new QCoreApplication(argc, argv);
+    }
+  }
+  return new QApplication(argc, argv);
+}
+
 int
 main(int argc, char* argv[])
 {
   QApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
   QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-  QApplication a(argc, argv);
-  a.setOrganizationName("AICS");
-  a.setOrganizationDomain("allencell.org");
-  a.setApplicationName("GPU Volume Explorer");
-  a.setApplicationVersion(AICS_VERSION_STRING);
 
-  LOG_INFO << a.organizationName().toStdString() << " " << a.applicationName().toStdString() << " "
-           << a.applicationVersion().toStdString();
+  QScopedPointer<QCoreApplication> a(createApplication(argc, argv));
+
+  a->setOrganizationName("AICS");
+  a->setOrganizationDomain("allencell.org");
+  a->setApplicationName("GPU Volume Explorer");
+  a->setApplicationVersion(AICS_VERSION_STRING);
+
+  LOG_INFO << a->organizationName().toStdString() << " " << a->applicationName().toStdString() << " "
+           << a->applicationVersion().toStdString();
 
   QCommandLineParser parser;
   parser.setApplicationDescription("Advanced GPU Accelerated Volume Explorer");
@@ -117,7 +131,7 @@ main(int argc, char* argv[])
   parser.addOption(scriptOption);
 
   // Process the actual command line arguments given by the user
-  parser.process(a);
+  parser.process(*a);
 
   if (!renderlib::initialize()) {
     renderlib::cleanup();
@@ -140,26 +154,16 @@ main(int argc, char* argv[])
 
     StreamServer* server = new StreamServer(p._port, false, 0);
 
-    // set to true to show windows, or false to run as a console application
-    static const bool gui = false;
-    if (gui) {
-      MainWindow* _ = new MainWindow(server);
-      _->resize(512, 512);
-      _->show();
-    }
-
     LOG_INFO << "Created server at working directory:" << QDir::currentPath().toStdString();
-
-    // delete logFile;
 
     // must happen after renderlib init
     preloadFiles(p._preloadList);
-    
-    result = a.exec();
+
+    result = a->exec();
   } else {
     qtome* w = new qtome();
     w->show();
-    result = a.exec();
+    result = a->exec();
   }
 
   renderlib::cleanup();

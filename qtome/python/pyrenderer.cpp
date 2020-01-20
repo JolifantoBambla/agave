@@ -7,16 +7,15 @@
 #include "renderlib/RenderSettings.h"
 #include "renderlib/renderlib.h"
 
-#include <QApplication>
-#include <QElapsedTimer>
-#include <QMessageBox>
-#include <QOpenGLFramebufferObjectFormat>
-
 OffscreenRenderer::OffscreenRenderer()
   : m_fbo(nullptr)
   , m_width(0)
   , m_height(0)
 {
+  int ok = renderlib::initialize();
+  if (!ok) {
+    LOG_ERROR << "OffscreenRenderer failed renderlib initialization";
+  }
   LOG_DEBUG << "Initializing renderer for python script";
   this->init();
 }

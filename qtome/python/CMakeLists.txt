@@ -1,7 +1,7 @@
 target_include_directories(qtomeapp PUBLIC
-	"${CMAKE_SOURCE_DIR}"
-	"${CMAKE_CURRENT_SOURCE_DIR}"
-	${Boost_INCLUDE_DIRS}
+    "${CMAKE_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    ${Boost_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIRS}
     "pybind11"
 )
@@ -15,3 +15,23 @@ target_sources(qtomeapp PRIVATE
 )
 add_subdirectory(pybind11)
 
+pybind11_add_module(pyagave
+    "${CMAKE_CURRENT_SOURCE_DIR}/pyagavemodule.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/pyrenderer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/pyrenderer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/RenderInterface.h"
+)
+target_include_directories(pyagave PUBLIC
+    "${CMAKE_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    ${Boost_INCLUDE_DIRS}
+    ${GLM_INCLUDE_DIRS}
+    "pybind11"
+)
+target_link_libraries(pyagave PRIVATE
+	renderlib 
+	Qt5::Core Qt5::Gui Qt5::Network Qt5::WebSockets Qt5::Xml
+	${TIFF_LIBRARIES}
+	${Boost_LIBRARIES}
+)

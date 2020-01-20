@@ -6,4 +6,3 @@ r.render_iterations(100)
 r.frame_scene()
 r.session("test.png")
 r.redraw()
-

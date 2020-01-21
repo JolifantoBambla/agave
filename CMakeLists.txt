@@ -97,6 +97,7 @@ message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY
 # THE FRONT END QT EXE
 ######################
 add_subdirectory(qtome)
+
 #######################################
 # THE FRONT END QT WEBSOCKET SERVER EXE
 #######################################

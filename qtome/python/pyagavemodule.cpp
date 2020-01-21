@@ -1,6 +1,6 @@
 #include "pybind11/pybind11.h"
 
-#include "pyrenderer.h"
+//#include "pyrenderer.h"
 
 namespace py = pybind11;
 
@@ -10,7 +10,7 @@ public:
   int add(int x, int y) { return x + y; }
 };
 
-PYBIND11_MODULE(agave, m)
+PYBIND11_MODULE(pyagave, m)
 {
   m.doc() = "agave plugin"; // optional module docstring
   py::class_<TestAgave>(m, "renderer").def(py::init<>()).def("add", &TestAgave::add);

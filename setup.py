@@ -150,7 +150,7 @@ setup(
     include_package_data=True,
     keywords="agave, allen cell, imaging, computational biology",
     ext_modules=[CMakeExtension("pyagave")],
-    packages=["agave_python"],
+    packages=["agave"],
     cmdclass=dict(build_ext=CMakeBuild),
     install_requires=requirements,
     setup_requires=setup_requirements,

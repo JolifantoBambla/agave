@@ -35,3 +35,6 @@ target_link_libraries(pyagave PRIVATE
 	${TIFF_LIBRARIES}
 	${Boost_LIBRARIES}
 )
+add_custom_command(TARGET pyagave POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pyagave> ${PROJECT_SOURCE_DIR}
+)

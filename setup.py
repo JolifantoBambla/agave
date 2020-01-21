@@ -111,8 +111,8 @@ class CMakeBuild(build_ext):
                 "-DCMAKE_TOOLCHAIN_FILE=D:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
             ]
             cmake_args += ["-DVCPKG_TARGET_TRIPLET=x64-windows"]
-            cmake_args += ['-G "Visual Studio 16 2019"']
-            cmake_args += ["-A x64"]
+            cmake_args += ["-G", "Visual Studio 16 2019"]
+            cmake_args += ["-A", "x64"]
             build_args += ["--", "/m"]
         else:
             cmake_args += ["-DCMAKE_BUILD_TYPE=" + cfg]
@@ -125,7 +125,8 @@ class CMakeBuild(build_ext):
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
         print("Build_temp: " + self.build_temp)
-        print("cmake " + ext.sourcedir + " ".join(cmake_args))
+        print("cmake " + ext.sourcedir + " " + " ".join(cmake_args))
+        subprocess.check_call(["cmake", "--version"], cwd=self.build_temp)
         subprocess.check_call(
             ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env
         )

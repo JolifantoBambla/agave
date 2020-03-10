@@ -1,6 +1,10 @@
+#include "pybind11/numpy.h"
 #include "pybind11/pybind11.h"
 
 //#include "pyrenderer.h"
+
+#include "renderlib/FileReader.h"
+#include "renderlib/ImageXYZC.h"
 
 namespace py = pybind11;
 
@@ -8,12 +12,28 @@ class TestAgave
 {
 public:
   int add(int x, int y) { return x + y; }
+  void load(void* data, size_t size) {}
 };
 
 PYBIND11_MODULE(pyagave, m)
 {
   m.doc() = "agave plugin"; // optional module docstring
-  py::class_<TestAgave>(m, "renderer").def(py::init<>()).def("add", &TestAgave::add);
+  py::class_<TestAgave>(m, "renderer")
+    .def(py::init<>())
+    .def("add", &TestAgave::add)
+    .def("load", [](py::array_t<uint16_t, py::array::c_style | py::array::forcecast> v) {
+      py::buffer_info info = v.request();
+
+      std::vector<uint32_t> newshape;
+      for (auto d : info.shape) {
+        newshape.push_back(d);
+      }
+      std::string name = "0";
+
+      std::shared_ptr<ImageXYZC> img = FileReader::loadFromArray_4D(static_cast<uint8_t*>(info.ptr), newshape, name);
+
+      return img;
+    });
 
   /*
     py::class_<OffscreenRenderer>(m, "renderer")

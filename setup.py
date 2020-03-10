@@ -9,7 +9,7 @@ import sys
 from distutils.version import LooseVersion
 
 
-with open("qtome/python/README.md") as readme_file:
+with open("agave_app/python/README.md") as readme_file:
     readme = readme_file.read()
 
 requirements = ["numpy>=1.14.1", "lxml", "scikit-image"]

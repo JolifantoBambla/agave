@@ -59,7 +59,14 @@ COMMANDS = {
     "MAT_OPACITY": [33, "I32", "F32"],
     "SET_PRIMARY_RAY_STEP_SIZE": [34, "F32"],
     "SET_SECONDARY_RAY_STEP_SIZE": [35, "F32"],
+    # r, g, b
     "BACKGROUND_COLOR": [36, "F32", "F32", "F32"],
+    # channel index, isovalue, isorange
+    "SET_ISOVALUE_THRESHOLD": [37, "I32", "F32", "F32"],
+    # channel index, array of [stop, r, g, b, a]
+    "SET_CONTROL_POINTS": [38, "I32", "F32A"],
+    # path, scene, time
+    "LOAD_VOLUME_FROM_FILE": [39, "S", "I32", "I32"],
 }
 
 
@@ -108,6 +115,11 @@ class CommandBuffer:
                     bytesize += 4
                 elif argtype == "I32":
                     bytesize += 4
+                elif argtype == "F32A":
+                    # one int32 for array length
+                    bytesize += 4
+                    # followed by one float for each element in the array
+                    bytesize += 4 * len(command[j + 1])
         return bytesize
 
     def make_buffer(self):
@@ -146,6 +158,14 @@ class CommandBuffer:
                 elif argtype == "I32":
                     struct.pack_into(">i", self.buffer, offset, cmd[j + 1])
                     offset += 4
+                elif argtype == "F32A":
+                    flist = cmd[j + 1]
+                    struct.pack_into(">i", self.buffer, offset, len(flist))
+                    offset += 4
+                    for k in flist:
+                        struct.pack_into("f", self.buffer, offset, flist[k])
+                        offset += 4
+
         # result is in this.buffer
         return self.buffer
 

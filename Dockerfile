@@ -17,12 +17,13 @@ RUN mkdir /agave && \
 
 # get Qt installed
 ENV QT_VERSION_A=5.12
-ENV QT_VERSION_B=5.12.5
-ENV QT_VERSION_SCRIPT=5125
+ENV QT_VERSION_B=5.12.6
+ENV QT_VERSION_SCRIPT=5126
 RUN wget https://download.qt.io/archive/qt/${QT_VERSION_A}/${QT_VERSION_B}/qt-opensource-linux-x64-${QT_VERSION_B}.run
 RUN chmod +x qt-opensource-linux-x64-${QT_VERSION_B}.run 
 COPY ci/qt-noninteractive.qs /qt-noninteractive.qs
 
+# dependencies needed to run the qt installer
 RUN apt-get install -y libdbus-1-dev libfontconfig
 RUN ./qt-opensource-linux-x64-${QT_VERSION_B}.run --script qt-noninteractive.qs -platform minimal
 

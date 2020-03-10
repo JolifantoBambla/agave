@@ -20,6 +20,7 @@ class ParseableStream
 public:
   virtual int32_t parseInt32() = 0;
   virtual float parseFloat32() = 0;
+  virtual std::vector<float> parseFloat32Array() = 0;
   virtual std::string parseString() = 0;
 };
 
@@ -27,7 +28,8 @@ enum class CommandArgType
 {
   I32,
   F32,
-  STR
+  STR,
+  F32A
 };
 
 struct ExecutionContext
@@ -375,3 +377,21 @@ CMDDECL(SetIsovalueThresholdCommand,
         37,
         "set_isovalue_threshold",
         CMD_ARGS({ CommandArgType::I32, CommandArgType::F32, CommandArgType::F32 }));
+
+struct SetControlPointsCommandD
+{
+  int32_t m_channel;
+  std::vector<float> m_data;
+};
+CMDDECL(SetControlPointsCommand, 38, "set_control_points", CMD_ARGS({ CommandArgType::I32, CommandArgType::F32A }));
+
+struct LoadVolumeFromFileCommandD
+{
+  std::string m_path;
+  int32_t m_scene;
+  int32_t m_time;
+};
+CMDDECL(LoadVolumeFromFileCommand,
+        39,
+        "load_volume_from_file",
+        CMD_ARGS({ CommandArgType::STR, CommandArgType::I32, CommandArgType::I32 }));

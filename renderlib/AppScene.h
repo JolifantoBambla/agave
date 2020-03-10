@@ -3,6 +3,8 @@
 #include "BoundingBox.h"
 #include "Defines.h"
 #include "DenoiseParams.h"
+#include "GradientData.h"
+#include "Timeline.h"
 #include "glm.h"
 
 #include <memory>
@@ -33,6 +35,8 @@ struct VolumeDisplay
   float m_roughness[MAX_CPU_CHANNELS];
   float m_opacity[MAX_CPU_CHANNELS];
   bool m_enabled[MAX_CPU_CHANNELS];
+
+  GradientData m_gradientData[MAX_CPU_CHANNELS];
 };
 
 class Light
@@ -179,6 +183,7 @@ public:
 class Scene
 {
 public:
+  Timeline m_timeLine;
   // one single volume, for now...!
   std::shared_ptr<ImageXYZC> m_volume;
   // appearance settings for a volume

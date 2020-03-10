@@ -14,9 +14,6 @@ target_include_directories(renderlib PUBLIC
 	${TIFF_INCLUDE_DIR}
 	${GLAD_DIR}
 )
-target_compile_definitions(renderlib PUBLIC
-	BOOST_ALL_DYN_LINK
-)
 target_sources(renderlib PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/AppScene.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/AppScene.h"	
@@ -25,10 +22,15 @@ target_sources(renderlib PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/command.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/FileReader.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/FileReader.h"	
+	"${CMAKE_CURRENT_SOURCE_DIR}/FileReaderCzi.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/FileReaderCzi.h"	
+	"${CMAKE_CURRENT_SOURCE_DIR}/FileReaderTIFF.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/FileReaderTIFF.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/Flags.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Flags.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/Framebuffer.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Framebuffer.h"	
+	"${CMAKE_CURRENT_SOURCE_DIR}/GradientData.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/Histogram.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Histogram.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/ImageXYZC.cpp"
@@ -49,18 +51,35 @@ target_sources(renderlib PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/Status.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/TexelProperties.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/TexelProperties.h"	
+	"${CMAKE_CURRENT_SOURCE_DIR}/Timeline.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Timeline.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/Timing.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Timing.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/tiny_obj_loader.cc"
 	"${CMAKE_CURRENT_SOURCE_DIR}/tiny_obj_loader.h"	
+	"${CMAKE_CURRENT_SOURCE_DIR}/VolumeDimensions.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/VolumeDimensions.h"	
 )
 add_subdirectory(gl)
 add_subdirectory(gl/v33)
 add_subdirectory(glad/src)
 add_subdirectory(glsl/v330)
 
-target_link_libraries(renderlib PRIVATE
+# libCZI dependency for renderlib
+add_compile_definitions(_STATICLIBBUILD)
+# I prefer target_compile_definitions but the target has to exist first
+add_subdirectory(libCZI/Src/JxrDecode)
+add_subdirectory(libCZI/Src/libCZI)
+find_library(libCZI REQUIRED PATHS ${CMAKE_SOURCE_DIR}/libCZI)
+set_target_properties(libCZI PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+# end libczi dependency
+
+target_link_libraries(renderlib
 	Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Network Qt5::WebSockets Qt5::Xml 
 	${TIFF_LIBRARIES}
 	${CMAKE_DL_LIBS}
+	libCZIStatic
+	JxrDecodeStatic # libCZI depends on it
 )
+
+

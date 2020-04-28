@@ -64,8 +64,8 @@ QAppearanceSettingsWidget::QAppearanceSettingsWidget(QWidget* pParent, QRenderSe
   m_StepSizePrimaryRaySlider.setStatusTip(tr("Set volume ray march step size for camera rays"));
   m_StepSizePrimaryRaySlider.setToolTip(tr("Set volume ray march step size for camera rays"));
   m_StepSizePrimaryRaySlider.setRange(0.1, 100.0);
-  m_StepSizePrimaryRaySlider.setValue(rs->m_RenderSettings.m_StepSizeFactor);
   m_StepSizePrimaryRaySlider.setDecimals(3);
+  m_StepSizePrimaryRaySlider.setValue(rs->m_RenderSettings.m_StepSizeFactor);
   m_MainLayout.addRow("Primary Ray Step Size", &m_StepSizePrimaryRaySlider);
 
   QObject::connect(
@@ -74,8 +74,8 @@ QAppearanceSettingsWidget::QAppearanceSettingsWidget(QWidget* pParent, QRenderSe
   m_StepSizeSecondaryRaySlider.setStatusTip(tr("Set volume ray march step size for scattered rays"));
   m_StepSizeSecondaryRaySlider.setToolTip(tr("Set volume ray march step size for scattered rays"));
   m_StepSizeSecondaryRaySlider.setRange(0.1, 100.0);
-  m_StepSizeSecondaryRaySlider.setValue(rs->m_RenderSettings.m_StepSizeFactorShadow);
   m_StepSizeSecondaryRaySlider.setDecimals(3);
+  m_StepSizeSecondaryRaySlider.setValue(rs->m_RenderSettings.m_StepSizeFactorShadow);
   m_MainLayout.addRow("Secondary Ray Step Size", &m_StepSizeSecondaryRaySlider);
 
   QObject::connect(

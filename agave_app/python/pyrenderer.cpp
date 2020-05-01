@@ -12,6 +12,8 @@
 #include <QMessageBox>
 #include <QOpenGLFramebufferObjectFormat>
 
+#include <boost/filesystem.hpp>
+
 OffscreenRenderer::OffscreenRenderer()
   : m_fbo(nullptr)
   , m_width(0)
@@ -294,7 +296,13 @@ int
 OffscreenRenderer::Redraw()
 {
   m_lastRenderedImage = this->render();
-  m_lastRenderedImage.save(QString::fromStdString(m_session));
+  // make sure dirs exist
+  boost::filesystem::create_directories(boost::filesystem::path(m_session).parent_path());
+  bool ok = m_lastRenderedImage.save(QString::fromStdString(m_session));
+  if (!ok) {
+    LOG_WARNING << "Failed to save " << m_session;
+  }
+  // TODO return 0 if not ok?
   return 1;
 }
 int
